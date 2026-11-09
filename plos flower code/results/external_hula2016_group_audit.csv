@@ -1,0 +1,53 @@
+abbreviation,scientific_name,match_rule,image_files
+AliPla,Alisma plantago-aquatica,scientific_name,Alisma plantago aquatica 1.jpg;Alisma plantago aquatica 2.jpg;Alisma plantago aquatica 3.jpg
+SagSag,Sagittaria sagittifolia,scientific_name,Sagittaria sagittifolia 1.jpg;Sagittaria sagittifolia 2.jpg;Sagittaria sagittifolia 3.jpg
+AntLil,Anthericum liliago,scientific_name,Anthericum liliago 1.jpg;Anthericum liliago 2.jpg;Anthericum liliago 3.jpg
+GagLut,Gagea lutea,scientific_name,Gagea lutea 1.jpg;Gagea lutea 2.jpg;Gagea lutea 3.jpg
+AnoCri,Anoda cristata,scientific_name,Anoda cristata 1.jpg;Anoda cristata 2.jpg;Anoda cristata 3.jpg
+LinAus,Linum austriacum,scientific_name,Linum austriacum 1.jpg;Linum austriacum 2.jpg;Linum austriacum 3.jpg
+DiaSup,Dianthus superbus,scientific_name,Dianthus superbus 1.jpg;Dianthus superbus 2.jpg;Dianthus superbus 3.jpg
+LycF-C,Lychnis flos-cuculi,scientific_name,Lychnis flos cuculi 1.jpg;Lychnis flos cuculi 2.jpg;Lychnis flos cuculi 3.jpg
+DiaCar,Dianthus carthusianorum,scientific_name,Dianthus carthusianorum 1.jpg;Dianthus carthusianorum 2.jpg;Dianthus carthusianorum 3.jpg
+MycMur,Mycelis muralis,scientific_name,Mycelis muralis 1.jpg;Mycelis muralis 2.jpg;Mycelis muralis 3.jpg
+AstAlp,Aster alpinus,scientific_name,Aster alpinus 1.jpg;Aster alpinus 2.jpg;Aster alpinus 3.jpg
+EriStr,Erigeron annuus,scientific_name,Erigeron annuus 1.jpg;Erigeron annuus 2.jpg;Erigeron annuus 3.jpg
+EruSat,Eruca sativa,first_scientific_word_fallback,Eruca 2.jpg;Eruca sativa 1.jpg;Eruca sativa 3.jpg
+LunAnn,Lunaria annua,scientific_name,Lunaria annua 1.jpg;Lunaria annua 2.jpg;Lunaria annua 3.jpg
+EryD-C,Erythronium dens-canis,scientific_name,Erythronium dens-canis 1.jpg;Erythronium dens-canis 2.jpg;Erythronium dens-canis 3.jpg
+LilMar,Lilium martagon alba,scientific_name,Lilium martagon alba 1.jpg;Lilium martagon alba 2.jpg;Lilium martagon alba 3.jpg
+EupRos,Euphrasia rostkoviana,scientific_name,Euphrasia rostkoviana 1.jpg;Euphrasia rostkoviana 2.jpg;Euphrasia rostkoviana 3.jpg
+MelMel,Melittis melissophyllum,scientific_name,Melittis melissophyllum 1.jpg;Melittis melissophyllum 2.jpg;Melittis melissophyllum 3.jpg
+AneRan,Anemone ranunculoides,scientific_name,Anemone ranunculoides 1.jpg;Anemone ranunculoides 2.jpg;Anemone ranunculoides 3.jpg
+FraVir,Fragaria viridis,scientific_name,Fragaria viridis 1.jpg;Fragaria viridis 2.jpg;Fragaria viridis 3.jpg
+GalSpe,Galeopsis speciosa,scientific_name,Galeopsis speciosa 1.jpg;Galeopsis speciosa 2.jpg;Galeopsis speciosa 3.jpg
+LamMac,Lamium maculatum,scientific_name,Lamium maculatum 1.jpg;Lamium maculatum 2.jpg;Lamium maculatum 3.jpg
+ConArv,Convolvulus arvensis,scientific_name,Convolvulus arvensis 1.jpg;Convolvulus arvensis 2.jpg;Convolvulus arvensis 3.jpg
+GenAca,Gentiana acaulis,scientific_name,Gentiana acaulis 1.jpg;Gentiana acaulis 2.jpg;Gentiana acaulis 3.jpg
+AltOff,Althaea officinalis,scientific_name,Althaea officinalis 1.jpg;Althaea officinalis 2.jpg;Althaea officinalis 3.jpg
+GerPal,Geranium palustre,scientific_name,Geranium palustre 1.jpg;Geranium palustre 2.jpg;Geranium palustre 3.jpg
+GeuUrb,Geum urbanum,scientific_name,Geum urbanum 1.jpg;Geum urbanum 2.jpg;Geum urbanum 3.jpg
+PotSte,Potentilla sterilis,scientific_name,Potentilla sterilis 1.jpg;Potentilla sterilis 2.jpg;Potentilla sterilis 3.jpg
+CreBie,Crepis biennis,scientific_name,Crepis biennis 1.jpg;Crepis biennis 2.jpg;Crepis biennis 3.jpg
+HieAur,Hieracium aurantiacum,scientific_name,Hieracium aurantiacum 1.jpg;Hieracium aurantiacum 2.jpg;Hieracium aurantiacum 3.jpg
+HypPer,Hypericum perforatum,scientific_name,Hypericum perforatum 1.jpg;Hypericum perforatum 2.jpg;Hypericum perforatum 3.jpg
+RubFru,Rubus fruticosus agg.,first_scientific_word_fallback,Rubus fruticosus 1.jpg;Rubus fruticosus 2.jpg;Rubus fruticosus 3.jpg
+AtrBD,Atropa bella-donna,scientific_name,Atropa bella-donna 1.jpg;Atropa bella-donna 2.jpg;Atropa bella-donna 3.jpg
+CamRot,Campanula rotundifolia,scientific_name,Campanula rotundifolia 1.jpg;Campanula rotundifolia 2.jpg;Campanula rotundifolia 3.jpg
+LatTub,Lathyrus tuberosus,scientific_name,Lathyrus tuberosus 1.jpg;Lathyrus tuberosus 2.jpg;Lathyrus tuberosus 3.jpg
+PisSat,Pisum sativum,scientific_name,Pisum sativum 1.jpg;Pisum sativum 2.jpg;Pisum sativum 3.jpg
+GenVer,Gentiana verna,scientific_name,Gentiana verna 1.jpg;Gentiana verna 2.jpg;Gentiana verna 3.jpg
+SilDio,Silene dioica,scientific_name,Silene dioica 1.jpg;Silene dioica 2.jpg;Silene dioica 3.jpg
+VioBif,Viola biflora,scientific_name,Viola biflora 1.jpg;Viola biflora 2.jpg;Viola biflora 3.jpg
+VioRei,Viola reichenbachiana,scientific_name,Viola reichenbachiana 1.jpg;Viola reichenbachiana 2.jpg;Viola reichenbachiana 3.jpg
+BorOff,Borago officinalis,scientific_name,Borago officinalis 1.jpg;Borago officinalis 2.jpg;Borago officinalis 3.jpg
+SwePer,Swertia perennis,scientific_name,Swertia perennis 1.jpg;Swertia perennis 2.jpg;Swertia perennis 3.jpg
+FicVer,Ficaria verna,scientific_name,Ficaria verna 1.jpg;Ficaria verna 2.jpg;Ficaria verna 3.jpg
+XerAnn,Xeranthemum annuum,scientific_name,Xeranthemum annuum 1.jpg;Xeranthemum annuum 2.jpg;Xeranthemum annuum 3.jpg
+CymMur,Cymbalaria muralis,scientific_name,Cymbalaria muralis 1.jpg;Cymbalaria muralis 2.jpg;Cymbalaria muralis 3.jpg
+KicEla,Kickxia elatine,scientific_name,Kickxia elatine 1.jpg;Kickxia elatine 2.jpg;Kickxia elatine 3.jpg
+EpiPal,Epipactis palustris,scientific_name,Epipactis palustris 1.jpg;Epipactis palustris 2.jpg;Epipactis palustris 3.jpg
+OphApi,Ophrys apifera,scientific_name,Ophrys apifera 1.jpg;Ophrys apifera 2.jpg;Ophrys apifera 3.jpg
+GerPyr,Geranium pyrenaicum,scientific_name,Geranium pyrenaicum 1.jpg;Geranium pyrenaicum 2.jpg;Geranium pyrenaicum 3.jpg
+SteHol,Stellaria holostea,scientific_name,Stellaria holostea 1.jpg;Stellaria holostea 2.jpg;Stellaria holostea 3.jpg
+ArcTom,Arctium tomentosum,scientific_name,Arctium tomentosum 1.jpg;Arctium tomentosum 2.jpg;Arctium tomentosum 3.jpg
+CirArv,Cirsium arvense,scientific_name,Cirsium arvense 1.jpg;Cirsium arvense 2.jpg;Cirsium arvense 3.jpg

@@ -1,0 +1,16 @@
+{
+  "dataset": "Hula-Flegr 2016 flower beauty external benchmark",
+  "article_doi": "10.7717/peerj.2106",
+  "dataset_doi": "10.6084/m9.figshare.2082529.v1",
+  "license": "CC BY 4.0 (as listed by Figshare metadata)",
+  "n_groups": 52,
+  "n_color_images": 156,
+  "rating_workbook_sha256": "f5809290cf6cc2b4275e71b93d882de5a5b987b5525a9adb34e771d27dbff48e",
+  "target": "exact participant-level mean of the 52 B<abbreviation> color rating columns; rounded flower_traits scores retained only for audit",
+  "feature_aggregation": "mean of the three color-photo feature vectors within each stimulus group",
+  "outer_validation": "leave-one-stimulus-group-out",
+  "r2_baseline": "fold-specific training-group mean; denominator is sum((y_true - fold_training_mean)^2)",
+  "inner_validation": "five-fold shuffled RidgeCV (seed 13) within each outer training fold",
+  "resnet_weights_sha256": "3849cee25b3cd361ecae9151a410e90b4d3f0b5d80e6b613a52aafc1f45b77ba",
+  "device": "cpu"
+}

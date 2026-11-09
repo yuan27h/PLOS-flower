@@ -1,0 +1,3 @@
+comparison,rmse_delta,paired_bootstrap_95ci
+resnet50 - compact_low_level,0.0323130296,"[-0.04655552450003103, 0.1191273307457291]"
+fusion - compact_low_level,0.0301728233,"[-0.04929751095138842, 0.117639393703298]"

@@ -1,0 +1,39 @@
+{
+  "full": {
+    "filename": "all_ratings_full.csv",
+    "bytes": 10324813,
+    "sha256": "929b299e8efd8ceb02421ae2f72925f49684f34749777c4ea94cbeb28d754317",
+    "appeal": {
+      "rating_rows": 73920,
+      "participants": 1056,
+      "participant_flower_cells": 73907,
+      "duplicate_cells_averaged": 3,
+      "complete_participants": 1053
+    },
+    "interest": {
+      "rating_rows": 70157,
+      "participants": 1003,
+      "participant_flower_cells": 70146,
+      "duplicate_cells_averaged": 10,
+      "complete_participants": 996
+    }
+  },
+  "analysis_environment": {
+    "python": "3.14.2",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "scikit_learn": "1.9.1",
+    "torch": "2.15.0+cu132",
+    "torchvision": "0.29.2+cu132",
+    "cuda_available": false,
+    "device": "cpu",
+    "resnet_weights_sha256": "3849cee25b3cd361ecae9151a410e90b4d3f0b5d80e6b613a52aafc1f45b77ba",
+    "image_database_sha256": "98f6635d098a12e64a8f1d1077431a484e858873481b4e17314780675eb6ff7e",
+    "low_level_features": 18,
+    "resnet_features": 2048,
+    "full_feature_dimension": 2066,
+    "inner_cv": "5-fold shuffled KFold (seed 13), nested within outer leave-one-flower-out",
+    "rating_transform": "Fold-specific participant z-scoring, quality checks, aggregation, and training-target scaling",
+    "bootstrap_resamples": 5000
+  }
+}

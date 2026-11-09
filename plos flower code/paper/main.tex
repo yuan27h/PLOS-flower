@@ -1,0 +1,355 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.85in,left=2.75in,footskip=0.75in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{changepage}
+\usepackage{textcomp,marvosym}
+\usepackage{cite}
+\usepackage{nameref,hyperref}
+\usepackage[right]{lineno}
+\usepackage[nopatch=eqnum]{microtype}
+\DisableLigatures[f]{encoding = *, family = * }
+\usepackage[table]{xcolor}
+\usepackage{array}
+\newcolumntype{+}{!{\vrule width 2pt}}
+\newlength\savedwidth
+\newcommand\thickhline{\noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}\hline\noalign{\global\arrayrulewidth\savedwidth}}
+\raggedright
+\setlength{\parindent}{0.5cm}
+\textwidth 5.25in
+\textheight 8.75in
+\usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,justification=raggedright,singlelinecheck=off]{caption}
+\renewcommand{\figurename}{Fig}
+\bibliographystyle{plos2025}
+\makeatletter
+\renewcommand{\@biblabel}[1]{\quad#1.}
+\makeatother
+\usepackage{lastpage,fancyhdr,graphicx}
+\usepackage{epstopdf}
+\pagestyle{fancy}
+\fancyhf{}
+\rfoot{\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
+\fancyheadoffset[L]{2.25in}
+\fancyfootoffset[L]{2.25in}
+\lfoot{\today}
+
+\begin{document}
+\vspace*{0.2in}
+
+\begin{flushleft}
+{\Large
+\textbf{A cross-dataset leakage-controlled benchmark for predicting flower aesthetic ratings from compact and deep image features}
+}
+\newline
+Xinyuan Jin\textsuperscript{1}, Yao Tong\textsuperscript{1}, Yirong Wang\textsuperscript{1}, and Liang Hong\textsuperscript{1*}
+\\
+\bigskip
+\textbf{1} School of Media Engineering, Communication University of Zhejiang, Hangzhou, China
+\\
+\bigskip
+* hongliang@cuz.edu.cn
+\end{flushleft}
+
+\section*{Abstract}
+\textbf{Background.} Flowers are often used in research on positive affect, restoration, and visual preference, but it remains unclear whether image-level features can predict aggregate aesthetic ratings when the image category is narrow and the sample is small. The central question is whether a frozen high-dimensional representation adds useful information beyond compact, directly measurable image descriptors.
+
+\textbf{Methods and findings.} We evaluate a common leakage-controlled, flower-level benchmark in two complementary datasets: 70 standardized gerbera images with appeal and visual-interest ratings, and an independent dataset of 52 three-photo flower groups with beauty ratings from 2,006 respondents. Both datasets receive the same three-way ridge comparison under nested leave-one-held-out-flower-unit validation: 18 global low-level descriptors, a frozen 2,048-dimensional ImageNet ResNet-50 representation, and their concatenation. Scaling, dimensionality reduction, penalty selection, and outcome construction were computed inside each outer training fold, and intervals came from 2,000 and 5,000 flower-level bootstrap resamples. The gerbera analysis additionally tested ordinary least squares, gradient boosting, and cross-fitted stacking using the compact descriptors. In the gerbera corpus, compact descriptors reached $R^2 = 0.692$ (95\% CI $[0.511, 0.814]$) for interest and $R^2 = 0.256$ (95\% CI $[-0.082, 0.460]$) for appeal, compared with 0.148 and 0.199 for ResNet-50, and 0.163 and 0.203 for the fused feature set. 
+In the Hula--Flegr dataset, compact ridge achieved $R^2=0.405$, compared with $0.300$ for ResNet-50 and $0.307$ for fusion, using each held-out group's training-fold mean as the $R^2$ baseline.
+
+\textbf{Conclusions.} Compact descriptors produced the highest point estimate in all three tasks, with clear separation for gerbera interest ($\Delta R^2 = -0.544$, 95\% CI $[-0.943, -0.236]$) and unresolved separation for appeal. Gradient boosting and cross-fitted stacking did not improve on ridge; ordinary least squares offered only a trivial appeal gain (RMSE 0.927 vs 0.935). The two datasets support the same feature-family ordering but use different rating constructs, so neither pooling nor direct transfer is claimed.
+The contribution is a leakage-controlled empirical benchmark that makes the small-sample comparison auditable through matched feature-family contrasts in both datasets and a learner-flexibility extension in Gerbera. The study does not establish causal effects of color, shape, or texture.
+
+\noindent\textbf{Keywords:} computational aesthetics; flower images; cross-dataset replication; nested validation; prediction; ResNet-50; gerbera; beauty ratings
+
+\clearpage
+\newgeometry{top=0.85in,left=1in,right=1in,footskip=0.75in}
+\linenumbers
+
+\section*{Introduction}
+Flowers occupy a distinctive place in studies of visual preference and positive affect. Horticultural activity can improve affect, and floral colour has been linked to preference, relaxation, and positive uplift, although these findings do not imply that a particular image feature causes a particular emotional response \cite{tao2022,zhang2023}. A computational account of flower appeal is still useful because it asks a narrower, testable question: can the visual information in an image predict how a group of observers rates that image? Such a model can provide a quantitative bridge between controlled visual stimuli and the broader literature on aesthetic experience without claiming to measure emotion directly.
+
+Evidence from plant-perception studies also shows why the visual pathway should be treated as multidimensional. Eye-tracking and EEG studies relate visual attention to plant-feature preferences, while choice experiments and visitor studies link floral form, species richness, and colour diversity to aesthetic judgments \cite{zheng2022,ding2022,hopkins2022,tomitaka2021}. These findings motivate a feature-level analysis, but they do not by themselves establish which image statistics predict ratings for a standardized flower set.
+
+Aesthetic judgment is not random noise. Processing fluency theory proposes that ease of perceptual processing can contribute to aesthetic pleasure, and individual sensitivity to image statistics is related to visual preference \cite{reber2004,spehar2015,grinde2022}. Symmetry, complexity, observer attention, and colour visibility are related but non-interchangeable aspects of visual preference \cite{mather2023,pombo2023,nath2026,vanderkooi2022,miller2024}. Computational aesthetics has therefore developed from hand-designed colour, composition, and texture descriptors toward learned representations and image-quality networks \cite{datta2006,haralick1973,tamura1978,bianconi2021,talebi2018,ke2021}. These approaches are complementary in principle. Compact descriptors are easier to interpret and can be appropriate when the sample is small, whereas deep representations can capture patterns that are difficult to specify manually.
+
+The small-sample case is where this complementarity needs to be tested rather than assumed. A ResNet-50 embedding contains 2,048 pooled activations and was trained for ImageNet recognition, not for fine-grained floral aesthetics \cite{he2016}. Recent aesthetic systems extend convolutional representations with CLIP-style image-text models, transformers, contrastive learning, and vision-language prompting, but their performance is usually established on broad photographic benchmarks rather than on a narrow flower category \cite{hentschel2022,wang2022clip,sheng2023,levering2024}. Dimensionality reduction and regularization can make such features usable, but a high training fit is not evidence that the representation will predict a new flower. More flexible learners and feature fusion can increase apparent fit while increasing variance. Nested validation is therefore needed because model selection and performance evaluation become optimistic when they reuse the same folds, especially when the sample is small \cite{cawley2010,varoquaux2018}.
+
+The most direct precedent is the open gerbera corpus of Patten and colleagues. Their work showed that visual descriptors account for variation in appeal and visual interest, but it focused on linear associations and did not provide a common, leakage-controlled comparison of compact descriptors, frozen deep features, and their fusion \cite{patten2024}. It also left open whether flexible learners or stacking improve out-of-flower prediction in this highly standardized setting. These are not minor implementation choices: with only 70 flowers, the apparent advantage of a representation can be a consequence of the validation protocol or of training noise.
+
+The broader image-aesthetics literature reinforces the need for this controlled comparison. Large-scale resources such as AVA established rating distributions and semantic metadata as a standard basis for computational aesthetic assessment, while later reviews and personalized datasets broadened the problem beyond a single global score \cite{murray2012,zhangmy2021,yang2022}. Neural assessors model rating distributions rather than a single deterministic label, and recent benchmarks emphasize domain shift, annotator variation, bias, and explainability as unresolved problems \cite{talebi2018,huang2024aesbench,goree2025,li2025}. A flower-level benchmark can therefore make a narrower contribution by isolating representation choice and validation design in a visually homogeneous domain.
+
+This study addresses that gap with one central contribution: a flower-level benchmark that constructs outcomes within each training fold and then compares compact descriptors, frozen deep features, and their fusion under the same outer leave-one-flower-unit-out evaluation. We make the contribution operational through two matched contrasts applied in both datasets: (1) compact descriptors versus the frozen ResNet-50 representation and (2) their fusion versus the compact baseline. In the gerbera corpus, we add a third, dataset-specific contrast between ridge and ordinary least squares, boosting, and cross-fitted stacking. We evaluate the common feature-family benchmark in two parallel datasets: the gerbera corpus tests the prediction of appeal and visual interest, while the independent Hula--Flegr corpus tests whether the feature-family ordering is reproducible for a different flower set, observer population, and beauty rating task. The datasets are analyzed separately because their rating constructs are not interchangeable. This design makes the incremental value of a representation testable in both datasets and model flexibility testable in the gerbera corpus without leakage, while keeping the comparison auditable at the flower level. The contribution is a controlled comparative benchmark, not a new learning algorithm; its value is the direct evidence about when a simple, named feature family is a stronger default for a narrow aesthetic prediction task than a more expressive pretrained representation.The protocol is summarised in Fig~\ref{fig:scheme}.
+
+
+\begin{figure}[!h]
+\caption{\textbf{Study design and leakage-controlled evaluation protocol.} Two corpora (70 standardised gerbera images; 52 external three-photo groups)are processed by three feature families through one fold-internal pipeline.All steps to the right of the dashed boundary are fitted on training folds only, and feature extraction uses images, never ratings.}
+\label{fig:scheme}
+\end{figure}
+
+
+\section*{Materials and methods}
+\subsection*{Two complementary flower datasets}
+\noindent\textbf{Gerbera dataset.} This secondary analysis used the public gerbera image and rating corpus associated with Patten et al. \cite{patten2024}. The corpus contains 70 front-facing flower images, each 480 by 480 pixels, and ratings on an 11-point scale from 0 to 10. The source report described an appeal-only cohort and a joint appeal-and-interest cohort. The ratings file used here contains 160,947 rows, 1,056 appeal-only participant identifiers, and 1,003 identifiers with both appeal and interest ratings.
+
+The files are associated with the public Code Ocean capsule at \url{https://doi.org/10.24433/CO.7484990.v1} (direct capsule page: \url{https://codeocean.com/capsule/2803871/tree/v1}). The capsule exposes a \texttt{LICENSE} file whose opening terms identify the MIT License; this is evidence for the capsule's code terms, but public visibility alone does not establish unrestricted redistribution rights for the flower images, participant ratings, or pretrained weights. Those components are therefore cited and retained only for the documented secondary analysis, subject to confirmation of their own reuse conditions. The distributed rating table is identified by SHA-256 rather than by the MD5 recorded in the legacy reproduction code. Row counts, participant counts and SHA-256 hashes for every distributed file are listed in the reproducibility package. Representative stimuli and the image preprocessing context are shown in Fig~\ref{fig:stimuli}. The original study reported informed consent and approval by the Western Sydney University Human Research Ethics Committee; no new participants were recruited for this secondary analysis.
+
+\noindent\textbf{Hula--Flegr dataset.} We analyzed an independent external dataset from Hula, Flegr, and Borghi \cite{hulaflegr2016,hulaflegr2016data} in parallel with the gerbera corpus. The source study contains 52 flower stimulus groups, each displayed as three color photographs, and beauty ratings from 2,006 Czech respondents on a six-point scale. We used the participant-level color-rating columns in the public workbook and computed the exact mean for each stimulus group. The three photographs belonging to one stimulus group were kept together: each compact or ResNet-50 feature vector was calculated per photograph and then averaged within the group. The target was therefore one beauty score per group, and the outer loop left out one complete three-photo group at a time. The Figshare record lists the dataset and stimulus archive as CC BY 4.0; the package retains the source citation and attribution notice. This dataset provides independent support for the same three-way feature-family comparison; it is not concatenated with the gerbera ratings and its beauty target is not treated as identical to appeal or interest.
+
+We also inspected a later Hula dataset containing preference ratings for Czech and African plant species \cite{hulaflegr2020data}. Because its public deposit contains a workbook but no stimulus-image archive, it was not used for the image benchmark.
+
+\begin{figure}[!h]
+\caption{\textbf{Standardized gerbera stimuli used in the benchmark.} The figure shows representative images from the 70-flower corpus. The stimulus image is supplied separately from the manuscript source.}
+\label{fig:stimuli}
+\end{figure}
+
+\subsection*{Rating outcomes and fold-specific aggregation}
+Appeal ratings were selected from rows in which appeal was present and interest was absent. Interest ratings were selected from rows in which both appeal and interest were present. Repeated records for the same participant and flower were averaged before analysis, and the flower was the unit of prediction.
+
+The outcome construction was repeated inside every outer fold. Participants with incomplete training-flower responses were excluded. Additional response-quality rules removed participants whose modal response occupied more than half of their training ratings or whose rating variability was unusually low relative to the training-fold participant distribution. For retained participants, the mean and standard deviation were estimated from training flowers only. Training ratings were standardized with these quantities, the standardized ratings were averaged by flower, and the 69 training flower means were scaled to mean zero and unit population standard deviation. The held-out rating was transformed with the same training-derived quantities. Thus, the held-out response did not alter the training target through participant normalization or target scaling.
+
+\subsection*{Image features}
+The compact feature family contained 18 global descriptors calculated from each full image after resizing to 256 by 256 pixels: RGB means and standard deviations, grayscale mean and standard deviation, left-right and top-bottom symmetry differences, mean first-difference edge magnitude, HSV hue, saturation, and value means and standard deviations, and normalized eight-bin hue entropy. These descriptors follow established families of colour and texture statistics, but they are image statistics rather than validated psychological constructs, and they include the standardized background \cite{haralick1973,tamura1978,bianconi2021}.
+
+The deep feature family contained the 2,048 global-average-pooling activations from a frozen ResNet-50 with ImageNet-1K V2 weights \cite{he2016}. Images were transformed according to the published Torchvision weight preprocessing. The fused family concatenated the 18 compact descriptors and the 2,048 deep activations. No flower image or rating outcome was used to train the network.
+
+\subsection*{Models and validation}
+Ridge regression was used for the primary feature-family comparison. Scaling, principal component analysis for deep and fused features, and ridge fitting were implemented as a single pipeline. PCA retained 95\% of training-fold variance, and the ridge penalty was selected from nine log-spaced values by five-fold shuffled inner cross-validation. The outer loop left out one flower at a time, yielding 70 out-of-fold predictions per target. All preprocessing, model selection, and hyperparameter fitting were restricted to the outer training flowers.
+
+To test whether model flexibility added value after the feature family was fixed, low-level descriptors were also evaluated with ordinary least squares, gradient boosting, and cross-fitted stacking. Gradient boosting was implemented with the standard tree-boosting formulation of XGBoost \cite{chen2016}; its settings were selected by inner cross-validation. Stacking used cross-fitted base predictions so that the outer held-out flower did not enter the meta-learner training data.
+
+The same compact, ResNet-50, and fused ridge pipelines were run independently in both datasets, with fold-local feature scaling and the 95\% PCA rule. The gerbera analysis additionally reconstructed participant-level outcomes inside each fold; the Hula--Flegr analysis used the exact mean of the available source color-rating responses for each group and therefore did not use the gerbera participant-quality filters. Both analyses held out complete flower units and kept all model fitting inside the corresponding training folds. The difference in outcome construction is explicit in the audit files: the datasets provide parallel tests of the same representation comparison, not a pooled or directly transferable target.
+
+\subsection*{Statistical analysis and reproducibility}
+We report out-of-fold $R^2$ relative to the training-fold mean, RMSE, MAE, Pearson correlation, and Spearman correlation. Ninety-five percent percentile intervals were obtained by resampling the 70 gerbera flower pairs 2,000 times and the 52 external flower-group pairs 5,000 times, following the nonparametric bootstrap principle \cite{efron1979}. Paired RMSE differences used the same resampled flower indices for the compared models. These intervals condition on the fitted out-of-fold predictions and do not include refitting uncertainty. Analysis used Python 3.10.18, PyTorch 2.5.1, and scikit-learn 1.7.2 \cite{paszke2019,pedregosa2011}. The code writes derived features, fold audits, out-of-fold predictions, metrics, and figures for both benchmarks.
+
+\section*{Results}
+\subsection*{Parallel dataset results}
+The same three-way ridge comparison was evaluated independently in the two datasets. The gerbera corpus contributes appeal and interest endpoints, while the Hula--Flegr corpus contributes a beauty endpoint; the scores are therefore presented side by side but are not pooled. Compact descriptors had the highest point estimate in all three tasks, with the clearest separation for gerbera interest and wider uncertainty for gerbera appeal and Hula--Flegr beauty. The additional flexible-learner comparison was conducted only in the gerbera corpus and is reported separately below.
+
+\subsection*{Gerbera results}
+All 70 outer folds produced a held-out target and a prediction for each primary model. Under the common ridge protocol, compact descriptors had the best point estimates for both targets, but the strength of evidence differed (Table~\ref{table_features}).
+
+For interest, compact descriptors reached $R^2 = 0.692$ (95\% CI $[0.511, 0.814]$) with Pearson $r = 0.834$, compared with $R^2 = 0.148$ (95\% CI $[-0.252, 0.401]$) for ResNet-50 and $R^2 = 0.163$ for fusion. For appeal, the compact estimate of $R^2 = 0.256$ was also the highest of the three, but its confidence interval extended below zero ($-0.082$--0.460) and the paired difference from ResNet-50 did not exclude zero.
+ This direct comparison is the empirical answer to the study question: in this homogeneous, small image set, the extra capacity of the frozen representation produced no held-out gain, with the clearest evidence arising for interest.
+
+
+
+\begin{table}[!ht]
+\centering
+\caption{\textbf{Nested leave-one-flower-out performance of the three feature families.} RMSE and MAE are expressed in training-fold standard-deviation units. $R^2$ is computed relative to the training-fold mean. Intervals are 95\% percentile bootstrap intervals.}
+\begin{tabular}{l l r c r r r}
+\hline
+Target & Feature family & CV $R^2$ & 95\% CI & RMSE & MAE & Pearson $r$\\ 
+\thickhline
+Appeal & Compact low-level & 0.256 & $[-0.082, 0.460]$  & 0.935 & 0.637 & 0.520\\
+Appeal & ResNet-50 & 0.199 & $[0.042, 0.377]$ & 0.970 & 0.657 & 0.448\\
+Appeal & Fused & 0.203 & $[0.053, 0.378]$ & 0.968 & 0.656 & 0.452\\
+Interest & Compact low-level & 0.692 & $[0.511, 0.814]$ & 0.572 & 0.433 & 0.834\\
+Interest & ResNet-50       & 0.148 & $[-0.252, 0.401]$ & 0.950 & 0.736 & 0.407\\
+Interest & Fused           & 0.163 & $[-0.213, 0.414]$ & 0.941 & 0.732 & 0.433\\
+\hline
+\end{tabular}
+\label{table_features}
+\end{table}
+
+    
+   
+
+
+\subsection*{Hula--Flegr results}
+The parallel Hula--Flegr analysis reproduced the ordering of the feature families (Table~\ref{table_external}). Compact ridge achieved $R^2=0.405$ (95\% CI $[0.154, 0.606]$), compared with $0.300$ for ResNet-50 ($[0.067, 0.505]$) and $0.307$ for fusion ($[0.076, 0.510]$). The compact model also had the lowest RMSE and the largest correlation with the source beauty scores. Together with the gerbera results, this provides two-dataset support for the same point-estimate ordering; the overlapping intervals and different rating constructs limit the claim to reproducibility of the comparison rather than universal superiority. Fig~\ref{fig:external} presents both datasets side by side.
+
+\begin{table}[!ht]
+\centering
+\caption{\textbf{Parallel Hula--Flegr dataset results on 52 flower stimulus groups.} Targets are exact means of the source participant-level color-rating columns. The three photographs per group were aggregated before leave-one-group-out prediction.}
+\begin{tabular}{l r l r r}
+\hline
+Feature family & CV $R^2$ & Bootstrap 95\% CI & RMSE & Pearson $r$\\ \thickhline
+Compact low-level & 0.405 & [0.154, 0.606] & 0.393 & 0.629\\
+ResNet-50 & 0.300 & [0.067, 0.505] & 0.427 & 0.546\\
+Fused & 0.307 & [0.076, 0.510] & 0.424 & 0.551\\ \hline
+\end{tabular}
+\label{table_external}
+\end{table}
+
+\begin{figure}[!h]
+\caption{\textbf{Parallel comparison across the two flower datasets.} The left panel shows out-of-fold $R^2$ for the gerbera appeal and interest targets and the Hula--Flegr beauty target. The right panel shows each deep-feature route's change relative to compact descriptors; negative values favor the compact baseline. The Hula--Flegr analysis treats each three-photo stimulus group as one held-out unit. }
+\label{fig:external}
+\end{figure}
+
+\begin{table}[!ht]
+\centering
+\caption{\textbf{Direct matched contrasts against the compact ridge baseline.}
+Differences use the ratings file distributed with this package and the same 70 outer folds.
+$\Delta R^2$ and $\Delta$RMSE are comparison minus compact ridge, so negative
+values favor the comparison. Brackets give paired 95\% percentile bootstrap
+intervals over 2{,}000 flower-level resamples; both sides of each contrast reuse
+the same resampled flower indices, and the intervals condition on the fitted
+out-of-fold predictions.}
+\begin{tabular}{l l r r}
+\hline
+Target & Comparison & $\Delta R^2$ [95\% CI] & $\Delta$RMSE [95\% CI]\\ \thickhline
+Appeal & ResNet-50 ridge & $-0.057$ [$-0.267$, $+0.293$] & $+0.035$ [$-0.130$, $+0.180$]\\
+Appeal & Fusion ridge & $-0.053$ [$-0.258$, $+0.303$] & $+0.033$ [$-0.132$, $+0.177$]\\
+Appeal & OLS & $+0.012$ [$-0.146$, $+0.085$] & $-0.007$ [$-0.071$, $+0.066$]\\
+Appeal & Boosting & $-0.086$ [$-0.353$, $+0.231$] & $+0.053$ [$-0.094$, $+0.203$]\\
+Appeal & Stacking & $-0.156$ [$-0.429$, $+0.230$] & $+0.093$ [$-0.092$, $+0.266$]\\
+Interest & ResNet-50 ridge & $-0.544$ [$-0.943$, $-0.236$] & $+0.378$ [$+0.157$, $+0.606$]\\
+Interest & Fusion ridge & $-0.528$ [$-0.899$, $-0.234$] & $+0.370$ [$+0.160$, $+0.587$]\\
+Interest & OLS & $-0.017$ [$-0.038$, $+0.002$] & $+0.016$ [$-0.002$, $+0.035$]\\
+Interest & Boosting & $-0.154$ [$-0.306$, $-0.029$] & $+0.128$ [$+0.025$, $+0.235$]\\
+Interest & Stacking & $-0.113$ [$-0.226$, $-0.006$] & $+0.096$ [$+0.005$, $+0.188$]\\ \hline
+\end{tabular}
+\label{table_contrasts}
+\end{table}
+
+
+
+
+Table~\ref{table_contrasts} makes the innovation and its limits explicit. The largest effect is not a claim that ResNet-50 is generally inferior; it is the reproducible absence of an incremental gain in this small, standardized flower setting. Fusion does not recover the lost interest prediction, and the flexible low-level learners do not provide a consistent improvement over the compact ridge reference. For appeal, the point estimates favor compact ridge, but the paired uncertainty intervals do not resolve a difference between the feature routes.
+
+The observed and out-of-fold predictions for the three feature families are supplied as Fig~\ref{fig:predictions}. The compact descriptor predictions track the observed interest ratings more closely than the two deep-feature routes, while all models shrink extreme predictions toward the training mean. The corresponding model-performance plot is supplied as Fig~\ref{fig:matched}.
+
+\begin{figure}[!h]
+\caption{\textbf{Observed and out-of-fold predicted ratings.} Panels show appeal and interest predictions for the compact, ResNet-50, and fused ridge models. The dashed line marks equality. The figure is supplied separately from the manuscript source.}
+\label{fig:predictions}
+\end{figure}
+
+\begin{figure}[!h]
+\caption{\textbf{Matched changes from the compact ridge baseline.}
+Panel A shows arrows from zero to each comparison's paired appeal and
+interest changes in CV $R^2$ (ResNet-50, fusion, OLS, gradient boosting,
+and cross-fitted stacking); points in the lower-left quadrant are worse
+than the compact baseline on both targets. Panel B shows the corresponding
+paired RMSE changes with bootstrap 95\% intervals (2,000 flower-level
+resamples). Negative $\Delta R^2$ and positive $\Delta$RMSE favor the
+compact baseline.}
+\label{fig:matched}
+\end{figure}
+
+\subsection*{Linear, nonlinear, and stacked models}
+The low-level model extensions did not overturn the feature-family comparison (Table~\ref{table_models}). Ordinary least squares had the lowest appeal RMSE among the low-level models ($0.927$), a small improvement over low-level ridge ($0.935$). For interest, low-level ridge remained best ($0.572$), while ordinary least squares, gradient boosting, and stacking gave RMSE values of $0.587$, $0.700$, and $0.668$. The nonlinear and stacked models therefore increased model complexity without providing a consistent out-of-flower gain.
+
+\begin{table}[!ht]
+\centering
+\caption{\textbf{Low-level model extensions under nested validation.} All models used the same 18 compact descriptors.}
+\begin{tabular}{l l r r r r}
+\hline
+Target & Model & CV $R^2$ & RMSE & MAE & Pearson $r$\\ \thickhline
+Appeal & Ordinary least squares & 0.268 & 0.927 & 0.667 & 0.552\\
+Appeal & Gradient boosting & 0.170 & 0.987 & 0.660 & 0.413\\
+Appeal & Cross-fitted stacking & 0.100 & 1.028 & 0.674 & 0.322\\
+Interest & Ordinary least squares & 0.675 & 0.587 & 0.454 & 0.827\\
+Interest & Gradient boosting & 0.538 & 0.700 & 0.544 & 0.733\\
+Interest & Cross-fitted stacking & 0.579 & 0.668 & 0.518 & 0.761\\ \hline
+\end{tabular}
+\label{table_models}
+\end{table}
+
+\subsection*{Exploratory feature structure and error behavior}
+The additional analyses make the main comparison inspectable at several levels. Fig~\ref{fig:r2} shows the cross-validated $R^2$ values for all evaluated learners. The compact ridge model was strongest for interest, while ordinary least squares was marginally stronger for appeal; the nonlinear and stacked extensions did not reverse the primary ranking. The descriptive feature--target associations in Fig~\ref{fig:feature} are not model coefficients or causal effects, but they show that the compact representation contains several distinct image-statistic signals rather than a single color proxy.
+
+The residual plots in Fig~\ref{fig:residuals} show shrinkage toward the center and a small number of difficult flowers shared across feature families. The error distributions in Fig~\ref{fig:errors} show the flower-level spread behind the aggregate RMSE values, including the lower median interest error for the compact route. The two-dimensional PCA projection of the frozen ResNet-50 features (Fig~\ref{fig:resnetspace}) also contains an influential outlying image; this geometry illustrates why a visually smooth embedding should not be treated as evidence of predictive validity with only 70 samples.
+
+
+\begin{figure}[!h]
+\caption{\textbf{Cross-target rank flow of the evaluated learners.} Lines track each model's rank from appeal to interest; point labels report the underlying nested leave-one-flower-out $R^2$ values. Rank 1 is the strongest model for that target.}
+\label{fig:r2}
+\end{figure}
+
+\begin{figure}[!h]
+\caption{\textbf{Feature--target associations of the 18 compact descriptors.}
+Each of the 18 spokes corresponds to one descriptor of the compact feature
+family, and the two closed profiles give its Pearson correlation with the
+fold-constructed appeal and interest targets across the 70 gerbera flowers.
+The centre of the polar plot is $r=-1$ and the outer ring is $r=+1$; the
+dashed ring marks $r=0$. Interest increases strongly with the symmetry and
+edge-density descriptors, whereas appeal shows only weak, oppositely signed
+associations with the same descriptors. These values are descriptive
+associations, not model coefficients, and were not used in place of nested
+prediction.}
+\label{fig:feature}
+\end{figure}
+
+\begin{figure}[!h]
+\caption{\textbf{Residual diagnostics for the compact ridge model.}
+Top row: out-of-fold residuals (prediction minus observation) against fitted
+values for the gerbera appeal, gerbera interest, and Hula--Flegr targets;
+the black line connects binned means. Bottom row: normal Q--Q plots of
+standardized residuals. The near-zero residual--fitted correlations and the
+heavy right tail on the appeal target indicate no strong linear
+misprediction but mildly non-normal error tails.}
+\label{fig:residuals}
+\end{figure}
+
+
+
+
+\begin{figure}[!h]
+\caption{\textbf{Error thresholds needed to cover held-out flowers.}
+Each curve gives, for one feature family, the absolute out-of-fold error
+threshold below which a given fraction of held-out flowers falls, for the
+appeal (A) and interest (B) targets. Lower curves are better; dashed markers
+show the median and 90th-percentile absolute error. Compact descriptors
+achieve the lowest errors on both targets, with a marked advantage for
+interest (median 0.33 versus 0.55--0.56).}
+\label{fig:errors}
+\end{figure}
+
+\begin{figure}[!h]
+\caption{\textbf{Geometry of the frozen ResNet-50 representation.}
+The first two principal components of the mean-centred frozen ResNet-50
+features (PC1 18\% and PC2 15\% of variance) are shown for the 70 gerbera
+flowers; each hexagon is one flower and the grey contours give the flower
+density. Points are coloured by the fold-constructed appeal (A) and
+interest (B) target in SD units. The dashed circle marks the image farthest
+from the origin in this plane (flower 2278). The projection is descriptive
+and is not used as a validation estimate.}
+\label{fig:resnetspace}
+\end{figure}
+
+\section*{Discussion}
+The result is more informative than a simple model ranking. Under one leakage-controlled protocol, a compact, directly measurable feature family predicted aggregate interest ratings better than a frozen ImageNet representation, and concatenating the two families did not improve the result. This is consistent with the original motivation for comparing hand-designed and learned features: in a narrow visual category, the useful variation may be low-dimensional, while a generic object-recognition representation may spend capacity on distinctions that do not align with fine-grained aesthetic ratings.
+
+The direct contrasts in Table~\ref{table_contrasts} define the empirical contribution. The feature-family comparison is large for interest ($\Delta R^2 = -0.544$ for ResNet-50 and $-0.528$ for fusion) but small for appeal ($-0.057$ and $-0.053$), where the paired RMSE intervals span zero. This target-specific pattern is more informative than a single overall model ranking: the benchmark shows where the representation choice matters and where the uncertainty is substantial. The comparison with the source gerbera study is therefore precise. The source study established associations between visual descriptors and ratings; this reanalysis tests whether those associations produce out-of-flower predictions and whether a generic deep representation adds held-out information under the same validation design.
+
+The benchmark also explains why training fit alone would have been misleading. The deep representation is high-dimensional relative to 70 flowers, and its PCA reduction and regularization were selected inside each training fold. Even after those safeguards, the deep and fused routes did not match the compact descriptors on held-out flowers. The appropriate interpretation is not that deep features are universally unsuitable, but that their transfer advantage depends on task variation, sample size, and the match between the pretraining objective and the target. For this setting, compact descriptors provide a stronger and more transparent default.
+
+Several limitations constrain the claim. The primary corpus contains 70 images from one flower category under controlled presentation, and the external replication contains 52 three-photo groups from a different study; transfer to natural scenes, other species, or other observer populations remains unknown. The external beauty outcome is related to, but not identical with, the gerbera appeal and interest outcomes, and its source design does not permit the same participant-quality filtering. The analyses predict flower-level aggregate ratings and do not model individual preferences. The low-level descriptors are global pixel statistics, include the standardized background, and are not one-to-one psychological measures. ResNet-50 was the only deep encoder tested. The historical draft also proposed SHAP and Grad-CAM explanations, but the fold-specific inputs needed to reproduce those analyses are not present in the local archive. We therefore do not present them as verified evidence; future work should apply explanation methods only after the predictive protocol is fixed, using methods such as SHAP and Grad-CAM \cite{lundberg2017,lundberg2020,selvaraju2017}. Finally, only one local rating table was available for this analysis, so every estimate reported here is conditional on that table; the out-of-fold predictions, fold audit, and metric tables needed to audit them are included in the reproducibility package.
+
+
+\section*{Conclusion}
+This study provides a reproducible small-sample benchmark for image-based prediction across two complementary flower datasets. Its central contribution is a direct, same-protocol comparison in both datasets: compact descriptors versus frozen deep features and fusion versus the compact baseline; the gerbera corpus additionally tests flexible learners against ridge. In the 70-image gerbera corpus, compact low-level descriptors were clearly stronger for interest, while appeal showed a compact-feature point estimate that was not separated from the alternatives by the paired uncertainty analysis. The same three-way point-estimate ordering was reproduced on 52 independent three-photo flower groups rated for beauty. The two datasets therefore support the same narrow methodological conclusion without being treated as the same psychological task. Feature fusion did not add held-out predictive value in either benchmark. Outcome construction, preprocessing, dimensionality reduction, and model selection were kept inside the training folds so that the result can be interpreted as a genuine held-out comparison. The conclusion is that compact descriptors are a defensible first baseline for narrow flower-aesthetic datasets, while claims of transfer or universal feature superiority require larger, preregistered cross-dataset studies.
+
+\section*{Data availability}
+The image database, the local rating file, derived features, fold audit, out-of-fold predictions, analysis scripts, and the software-version record are included in the accompanying reproducibility package. The gerbera source corpus is associated with the Code Ocean capsule at \url{https://doi.org/10.24433/CO.7484990.v1} and \url{https://codeocean.com/capsule/2803871/tree/v1}. The capsule's public \texttt{LICENSE} file identifies MIT terms for the capsule code; image, rating-data, and pretrained-weight reuse remain subject to their specific rights and author confirmation. SHA-256 hashes, row counts, and participant counts for the local files are supplied in the reproducibility package. The parallel Hula--Flegr dataset and color stimuli are from the Figshare record at \url{https://doi.org/10.6084/m9.figshare.2082529.v1}, whose metadata lists CC BY 4.0; the package includes the required attribution notice and only the color images needed for the reported benchmark.
+
+
+\section*{Ethics statement}
+This study is a secondary analysis of publicly available, de-identified datasets. No new human participants were recruited and no identifiable personal information was accessed. Institutional ethics review was therefore not required. The original data collection was conducted under the approvals and informed consent reported in the source publications.
+
+
+\section*{Author contributions}
+Xinyuan Jin: Conceptualization, Methodology, Software, Formal analysis, Writing -- original draft.
+Yao Tong: Data curation, Validation, Visualization.
+Yirong Wang: Investigation, Writing -- review \& editing.
+Liang Hong: Supervision, Writing -- review \& editing.
+All authors read and approved the submitted version.
+
+
+\section*{Funding}
+This work was supported by the Provincial Undergraduate Training Program for Innovation and Entrepreneurship (grant no. S202611647040). The funder had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.
+
+
+\section*{Competing interests}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+
+\section*{Acknowledgments}
+We thank the authors of the source studies for making the gerbera and Hula--Flegr datasets publicly available, and the contributors of the open-source Python, PyTorch, and scikit-learn ecosystems.
+
+
+\nolinenumbers
+\bibliography{references}
+\end{document}

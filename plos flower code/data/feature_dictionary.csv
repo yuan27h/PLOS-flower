@@ -1,0 +1,19 @@
+feature,description
+rgb_mean_r,Mean red-channel intensity over the full resized RGB image
+rgb_mean_g,Mean green-channel intensity over the full resized RGB image
+rgb_mean_b,Mean blue-channel intensity over the full resized RGB image
+rgb_sd_r,Standard deviation of red-channel intensity over the full image
+rgb_sd_g,Standard deviation of green-channel intensity over the full image
+rgb_sd_b,Standard deviation of blue-channel intensity over the full image
+gray_mean,Mean grayscale intensity using Rec. 601 coefficients
+gray_sd,Standard deviation of grayscale intensity
+symmetry_lr,Mean absolute difference between mirrored left and right image halves
+symmetry_tb,Mean absolute difference between mirrored top and bottom image halves
+edge_density,Mean absolute horizontal and vertical first difference
+saturation_mean,Mean HSV saturation
+saturation_sd,Standard deviation of HSV saturation
+value_mean,Mean HSV value
+value_sd,Standard deviation of HSV value
+hue_mean,Mean HSV hue
+hue_sd,Standard deviation of HSV hue
+hue_entropy_8bin,"Eight-bin HSV hue Shannon entropy normalized to the interval [0, 1]"

@@ -1,0 +1,13 @@
+target,comparison,rmse_delta,paired_bootstrap_95ci,interpretation
+appeal,boost_low_level - ridge_low_level,0.10419392288859086,"[-0.08306339143062444, 0.27365575616659454]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+appeal,mean_baseline - ridge_low_level,0.14895355843950986,"[-0.03963548958238579, 0.31504411091455276]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+appeal,ols_low_level - ridge_low_level,-0.007359720183338192,"[-0.0699379376248687, 0.06544133882375769]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+appeal,ridge_fusion - ridge_low_level,0.03295723996555744,"[-0.13479326989332335, 0.18016911159135876]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+appeal,ridge_resnet50 - ridge_low_level,0.03542242852620803,"[-0.13402105221950852, 0.18299651451955265]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+appeal,stack_low_level - ridge_low_level,0.0698446805781574,"[-0.10131609663022073, 0.22698387906693698]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+interest,boost_low_level - ridge_low_level,0.13078585381809704,"[0.025595357658285547, 0.23563091021160398]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+interest,mean_baseline - ridge_low_level,0.45758015090518633,"[0.29110851699962415, 0.6214918849504809]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+interest,ols_low_level - ridge_low_level,0.015507388152255386,"[-0.0018018655841580938, 0.03583157460548556]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+interest,ridge_fusion - ridge_low_level,0.3694518587025324,"[0.16128405277785254, 0.6009674953770756]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+interest,ridge_resnet50 - ridge_low_level,0.37820175807597367,"[0.15965268809833758, 0.6270728173383938]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.
+interest,stack_low_level - ridge_low_level,0.09705349502538563,"[0.00204472845971124, 0.18487588177308456]",Conditional image-level bootstrap of paired out-of-fold errors; refitting uncertainty is not included.

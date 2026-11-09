@@ -1,0 +1,8 @@
+{
+  "derived_features_sha256": "9a994f4a149767cb092188a2bc3c19da5f32d2623c9e506c63575eaec69f5002",
+  "rows": 70,
+  "predictor_columns": 2066,
+  "hue_entropy_definition": "normalized Shannon entropy of an eight-bin hue histogram",
+  "consistency_note": "The revised entropy is an exact affine transform of the earlier density-based index; the earlier model predictions are therefore unchanged after fold-wise standardization, but this regenerated feature file matches the current source code.",
+  "sha256_scope": "SHA-256 of data/derived_features.csv as distributed in this package"
+}
