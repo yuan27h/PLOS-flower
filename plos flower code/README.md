@@ -1,4 +1,57 @@
-Beyond the versions above, the scripts import `scipy`, `joblib`, `xarray` (to read `gerbera_appeal_img_db.nc`), `Pillow`, `openpyxl` (to read the external rating workbook) and, for `make_scheme_draft.py`, `h5py`. A minimal install is:
+PLOS-flower
+
+**Compact low-level descriptors match a frozen deep representation in flower beauty and interest prediction: a leakage-controlled, auditable benchmark**
+
+This repository is the reproducibility material for the manuscript. It contains the ratings, the derived feature matrices, the analysis code, the result tables and the figure files needed to regenerate every number and every figure reported in the paper.
+
+Every reported quantity can be traced to a file in `results/` or reproduced with a script in `code/`; the mapping is given in Section 5.
+
+---
+
+## 1. Directory layout
+
+All material sits under `plos flower code/`.
+
+| Path | Contents |
+|---|---|
+| `code/` | `analyze.py` (gerbera nested cross-validation), `paired_contrasts.py` (Table 3 contrasts), `analyze_external_hula2016.py` and `make_external_figure.py` (external benchmark), plus the figure scripts `make_extended_figures.py`, `make_matched_contrasts.py`, `make_scheme_draft.py` |
+| `data/` | Gerbera rating table, derived feature matrix, feature dictionary, image database, and the independent Hula–Flegr benchmark |
+| `results/` | Metrics with bootstrap intervals, out-of-fold predictions, fold audits, paired contrasts, dataset summaries and checksums |
+| `figures/` | The ten figure files referenced by the manuscript |
+| `weights/` | Frozen ImageNet ResNet-50 weights used for the deep representation |
+| `README.md` | This file |
+
+---
+
+## 2. Data files
+
+| File | Rows | Bytes | SHA-256 |
+|---|---|---|---|
+| `data/all_ratings_full.csv` | 160,947 | 10,324,813 | `929b299e8efd8ceb02421ae2f72925f49684f34749777c4ea94cbeb28d754317` |
+| `data/derived_features.csv` | 70 flowers × 2,066 predictors | 870,116 | `f949315269abce8afd13d120ae540842bc20e217832fabc92d442fcd3bc27219` |
+| `data/feature_dictionary.csv` | 18 descriptors × 3 columns | 1,100 | `86e6dadeea93dd409da7c05a5cafc51e498c198eed870bd49cc8b0a4ed232fdb` |
+| `data/gerbera_appeal_img_db.nc` | 70 images, 480 × 480 px | 48,401,483 | `98f6635d098a12e64a8f1d1077431a484e858873481b4e17314780675eb6ff7e` |
+| `data/external_hula2016/ratings_and_traits.xlsx` | 52 stimulus groups, 2,006 respondents | 1,077,346 | `f5809290cf6cc2b4275e71b93d882de5a5b987b5525a9adb34e771d27dbff48e` |
+| `weights/resnet50-imagenet1k-v2.pth` | — | — | `3849cee25b3cd361ecae9151a410e90b4d3f0b5d80e6b613a52aafc1f45b77ba` |
+
+The SHA-256 of `data/derived_features.csv` is the value recorded in `results/feature_regeneration_check.json`, so the feature matrix shipped here is the one that produced the reported out-of-fold predictions.
+
+**Gerbera rating table.** `all_ratings_full.csv` is the single rating table used for all gerbera estimates reported in the manuscript. It has 160,947 data rows, 144,077 of which carry an appeal rating and 76,457 an interest rating. The two analysis cohorts are defined in `code/analyze.py` as follows: appeal uses ratings from participants who rated appeal and not interest (73,920 rows, 1,056 identifiers), and interest uses ratings from participants who rated both (70,157 rows, 1,003 identifiers). The table does not match the MD5 recorded by the legacy reproduction code, so it is reported with the SHA-256 above rather than as checksum-verified canonical data; no second or fuller version of this table is distributed.
+
+**External benchmark.** `data/external_hula2016/` holds the CC BY 4.0 rating workbook, the 156 colour stimuli, per-group targets, and the derived features aggregated over the three photographs of each stimulus group. The target is the exact participant-level mean of the colour-rating columns; the rounded `flower_traits` scores are retained for audit only.
+
+---
+
+## 3. Software environment
+
+The files in `results/` were produced with:
+
+```
+Python 3.14.2   numpy 2.5.4   pandas 3.1.1   scikit-learn 1.9.1
+torch 2.15.0    torchvision 0.29.2            CPU (no CUDA device)
+```
+
+Image features are deterministic given the frozen weights, so a CPU-only run reproduces the same predictions; a CUDA device only shortens feature extraction.Beyond the versions above, the scripts import `scipy`, `joblib`, `xarray` (to read `gerbera_appeal_img_db.nc`), `Pillow`, `openpyxl` (to read the external rating workbook) and, for `make_scheme_draft.py`, `h5py`. A minimal install is:
 
 ```bash
 pip install "numpy>=2.2" "pandas>=2.3" "scikit-learn>=1.7" scipy joblib xarray h5py openpyxl Pillow \
